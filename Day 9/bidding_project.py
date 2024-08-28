@@ -3,23 +3,26 @@ class Biding:
     def __init__(self):
         self.bid_details = dict()
         self.highest_bidder = None
+        self.bidding_finished = False
  
 
     def bid_func(self):
-        name = input("What is your name?:")
-        bid_price = int(input("What's your bid?: $"))
+        while not self.bidding_finished:
+            name = input("What is your name?:")
+            bid_price = int(input("What's your bid?: $"))
 
-        self.bid_details[name] = bid_price
+            self.bid_details[name] = bid_price
 
-        other_bidders = input("Are there any other bidders? Type 'yes' or 'no'.")
+            other_bidders = input("Are there any other bidders? Type 'yes' or 'no'.")
 
-        if other_bidders == "yes":
-            self.high_bidder_update(name)
-            self.bid_func()
-            
-        elif other_bidders == "no":
-            self.high_bidder_update(name)
-            return f"The winner is {self.highest_bidder} with the bid price of {self.bid_details[self.highest_bidder]} "
+            if other_bidders == "yes":
+                self.high_bidder_update(name)
+                
+                
+            elif other_bidders == "no":
+                self.high_bidder_update(name)
+                self.bidding_finished = True
+                return f"The winner is {self.highest_bidder} with the bid price of {self.bid_details[self.highest_bidder]} "
 
 
     def high_bidder_update(self, name):
