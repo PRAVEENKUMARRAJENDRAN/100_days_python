@@ -42,6 +42,29 @@ def report_output():
     print(f"Money: ${money['value']}")
 
 
+def check_resource(coffee):
+    if coffee == 'espresso': 
+        if resources['coffee'] < MENU[coffee]["ingredients"]["coffee"] and resources['water'] < MENU[coffee]["ingredients"]["water"]:
+            return False
+    else:
+        if resources['coffee'] < MENU[coffee]["ingredients"]["coffee"] and resources['water'] < MENU[coffee]["ingredients"]["water"] and resources['milk'] < MENU[coffee]["ingredients"]["milk"]:
+            return False
+    return True
+
+def process_coins(quarter, dime, nickle, penny):
+    quarter *= 0.25
+    dime *= 0.10
+    nickle *= 0.05
+    penny *= 0.01
+    total = quarter + dime + nickle + penny
+    return total
+
+
+def deduct_resources(coffee_choice):
+    resources['water'] -= MENU[coffee_choice]['ingredients']['water']
+    resources['coffee'] -= MENU[coffee_choice]['ingredients']['coffee']
+    if coffee_choice != 'espresso':
+        resources['milk'] -= MENU[coffee_choice]['ingredients']['milk']
 
 
 
@@ -59,7 +82,28 @@ def coffee_make():
             on = False
             print("Coffee machine is under maintenance. Please try again after an hour.")
         else:
-            print("Coffee Selection")
+            resource_check = check_resource(coffee)
+
+            if resource_check:
+                 print("Please insert coins.")
+                 quarters = int(input("How many quarters?: "))
+                 dimes = int(input("How many dimes?: "))
+                 nickles = int(input("How many nickles?: "))
+                 pennies = int(input("How many pennies?: "))
+
+                 if process_coins(quarters, dimes, nickles, pennies) == MENU[coffee]["cost"]:
+                    deduct_resources(choice)
+                    print(f"Here is your {choice} ☕. Have a good one!")
+                 elif process_coins(quarters, dimes, nickles, pennies) > MENU[coffee]["cost"]:
+                    deduct_resources(choice)
+                    change = process_coins(quarters, dimes, nickles, pennies) - MENU[choice]['cost']
+                    print(f"Here is ${change} in change.")
+                    print(f"Here is your {choice} ☕. Have a good one!")
+                 elif process_coins(quarters, dimes, nickles, pennies) < MENU[coffee]["cost"]:
+                    print(f"Not enough money, ${(process_coins(quarters, dimes, nickles, pennies))} refunded.")
+
+            else:
+                print("No enough resource to make coffee")
 
 
 coffee_make()
